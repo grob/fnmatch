@@ -1,0 +1,26 @@
+{
+    "name": "fnmatch",
+    "version": "1.0.0",
+    "description": "Unix filename pattern matching",
+    "keywords": ["filename", "file", "pattern", "matching"],
+    "homepage": "https://github.com/grob/fnmatch/",
+    "author": {
+        "name": "Robert Gaggl",
+        "email": "robert@nomatic.org",
+        "web": "http://github.com/grob/"
+    },
+    "contributors": [],
+    "repositories": [{
+        "type": "git",
+        "url": "https://github.com/grob/fnmatch.git"
+    }],
+    "bugs": "http://github.com/grob/fnmatch/issues",
+    "licenses": [{
+        "type": "Apache License Version 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }],
+    "engines": {
+        "ringojs": ">= 0.10"
+    },
+    "main": "./lib/fnmatch"
+}
