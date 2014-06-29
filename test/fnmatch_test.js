@@ -12,10 +12,10 @@ var execTest = function(func, pattern, filenames, shouldMatch) {
     for each (let filename in filenames) {
         if (shouldMatch === false) {
             assert.isFalse(func(filename, pattern),
-                strings.format("expected {} to not match {}", filename, pattern));
+                strings.format("expected {} to not match {}", pattern, filename));
         } else {
             assert.isTrue(func(filename, pattern),
-                strings.format("expected {} to match {}", filename, pattern));
+                strings.format("expected {} to match {}", pattern, filename));
         }
     }
 };
@@ -28,6 +28,7 @@ exports.testFnmatch = function() {
         ['*???', 'abc'],
         ['???', 'abc'],
         ['*', 'abc'],
+        ["a*", ["a", "abc", "abd", "abe"]],
         ['ab[cd]', 'abc'],
         ['ab[!de]', 'abc'],
         ['ab[de]', 'abc', false],
@@ -35,6 +36,10 @@ exports.testFnmatch = function() {
         ['??', 'a', false],
         ['b', 'a', false],
         ['*.js', 'tmp/abc.js'],
+        ["\\*", "*"],
+        ["\\**", "**"],
+        ["\\*\\*", "**"],
+        ["b*/", "bdir/"],
 
         // these test that '\' is handled correctly in character sets;
         // see SF bug #409651
@@ -49,6 +54,17 @@ exports.testFnmatch = function() {
         ['foo*', '\nfoo', false],
         ['*', '\n'],
 
+        // tests for character classes
+        ["[a-c]b*", ["abc", "abd", "abe", "bb", "cb"]],
+        ["[a-y]*[^c]", ["abd", "abe", "bb", "bcd", "bdir/", "ca", "cb", "dd", "de"]],
+        ["a*[^c]", ["abd", "abe"]],
+        ["a[X-]b", ["a-b", "aXb"]],
+        ["[^a-c]*", ["d", "dd", "de"]],
+        ["a\\*b/*", ["a*b/ooo"]],
+        ["a\\*?/*", ["a*b/ooo"]],
+        ["a[\\b]c", ["abc"]],
+
+
         // tests for {<pattern>,<pattern>[..]}
         ['{a*}', 'abc'],
         ['{?b?}', 'abc'],
@@ -60,7 +76,12 @@ exports.testFnmatch = function() {
         ]],
         ['a{1..5}b', [
             'a1b', 'a2b', 'a3b', 'a4b', 'a5b'
-        ]]
+        ]],
+
+        // negations
+        ["!a*", ["\\!a", "d", "e", "!ab", "!abc"]],
+        ["!!a*", "a!b"],
+        ["!\\!a*", ["a!b", "d", "e", "\\!a"]]
 
     ];
     for each (let [filename, pattern, shouldMatch] in tests) {
