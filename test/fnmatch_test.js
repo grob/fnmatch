@@ -5,44 +5,63 @@ var strings = require("ringo/utils/strings");
 
 var {fnmatch, fnmatchcase} = require("../lib/fnmatch");
 
-var execTest = function(func, filename, pattern, shouldMatch) {
-    if (shouldMatch === false) {
-        assert.isFalse(func(filename, pattern),
-            strings.format("expected {} to not match {}", filename, pattern));
-    } else {
-        assert.isTrue(func(filename, pattern),
-            strings.format("expected {} to match {}", filename, pattern));
+var execTest = function(func, pattern, filenames, shouldMatch) {
+    if (!Array.isArray(filenames)) {
+        filenames = [filenames];
+    }
+    for each (let filename in filenames) {
+        if (shouldMatch === false) {
+            assert.isFalse(func(filename, pattern),
+                strings.format("expected {} to not match {}", filename, pattern));
+        } else {
+            assert.isTrue(func(filename, pattern),
+                strings.format("expected {} to match {}", filename, pattern));
+        }
     }
 };
 
 exports.testFnmatch = function() {
     var tests = [
         ['abc', 'abc'],
-        ['abc', '?*?'],
-        ['abc', '???*'],
-        ['abc', '*???'],
-        ['abc', '???'],
-        ['abc', '*'],
-        ['abc', 'ab[cd]'],
-        ['abc', 'ab[!de]'],
-        ['abc', 'ab[de]', false],
-        ['abcef', 'ab[cd]ef'],
-        ['a', '??', false],
-        ['a', 'b', false],
-        ['tmp/abc.js', '*.js'],
+        ['?*?', 'abc'],
+        ['???*', 'abc'],
+        ['*???', 'abc'],
+        ['???', 'abc'],
+        ['*', 'abc'],
+        ['ab[cd]', 'abc'],
+        ['ab[!de]', 'abc'],
+        ['ab[de]', 'abc', false],
+        ['ab[cd]ef', 'abcef'],
+        ['??', 'a', false],
+        ['b', 'a', false],
+        ['*.js', 'tmp/abc.js'],
 
         // these test that '\' is handled correctly in character sets;
         // see SF bug #409651
-        ['\\', '[\\]'],
-        ['a', '[!\\]'],
-        ['\\', '[!\\]', false],
+        ['[\\]', '\\'],
+        ['[!\\]', 'a'],
+        ['[!\\]', '\\', false],
 
         // test that filenames with newlines in them are handled correctly.
         // http://bugs.python.org/issue6665
-        ['foo\nbar', 'foo*'],
-        ['foo\nbar\n', 'foo*'],
-        ['\nfoo', 'foo*', false],
-        ['\n', '*']
+        ['foo*', 'foo\nbar'],
+        ['foo*', 'foo\nbar\n'],
+        ['foo*', '\nfoo', false],
+        ['*', '\n'],
+
+        // tests for {<pattern>,<pattern>[..]}
+        ['{a*}', 'abc'],
+        ['{?b?}', 'abc'],
+        ['{*c}', 'abc'],
+        ['{x*,a*}', 'abc'],
+        ['a{b,c{d,e},{f,g}h}x{y,z}', [
+            'abxy', 'abxz', 'acdxy', 'acdxz', 'acexy',
+            'acexz', 'afhxy', 'afhxz', 'aghxy', 'aghxz'
+        ]],
+        ['a{1..5}b', [
+            'a1b', 'a2b', 'a3b', 'a4b', 'a5b'
+        ]]
+
     ];
     for each (let [filename, pattern, shouldMatch] in tests) {
         execTest(fnmatch, filename, pattern, shouldMatch !== false);
