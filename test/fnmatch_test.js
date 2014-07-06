@@ -55,6 +55,7 @@ exports.testFnmatch = function() {
         ['*', '\n'],
 
         // tests for character classes
+        ["a[bc", ['a[bc']],
         ["[a-c]b*", ["abc", "abd", "abe", "bb", "cb"]],
         ["[a-y]*[^c]", ["abd", "abe", "bb", "bcd", "bdir/", "ca", "cb", "dd", "de"]],
         ["a*[^c]", ["abd", "abe"]],
@@ -63,12 +64,22 @@ exports.testFnmatch = function() {
         ["a\\*b/*", ["a*b/ooo"]],
         ["a\\*?/*", ["a*b/ooo"]],
         ["a[\\b]c", ["abc"]],
+        ["a[\\.]c", ["a.c"]],
 
+        // test literal brackets in character classes
+        ['[]]b', ']b'],
+        ['[[a]b', ['[b', 'ab']],
+        ['[]a[]b', [']b', '[b']],
+        ['[][!]', ['!', ']', '[']],
 
         // tests for {<pattern>,<pattern>[..]}
+        ['{', '{'],
         ['{a*}', 'abc'],
         ['{?b?}', 'abc'],
         ['{*c}', 'abc'],
+        ['{a\\*}', 'a*'],
+        ['{a\\*}', 'ab', false],
+        ['{a\\{b}', 'a{b'],
         ['{x*,a*}', 'abc'],
         ['a{b,c{d,e},{f,g}h}x{y,z}', [
             'abxy', 'abxz', 'acdxy', 'acdxz', 'acexy',
