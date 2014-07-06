@@ -68,6 +68,7 @@ exports.testFnmatch = function() {
 
         // test literal brackets in character classes
         ['[]]b', ']b'],
+        ['[[]b', '[b'],
         ['[[a]b', ['[b', 'ab']],
         ['[]a[]b', [']b', '[b']],
         ['[][!]', ['!', ']', '[']],
