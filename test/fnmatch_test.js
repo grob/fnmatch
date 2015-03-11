@@ -7,7 +7,11 @@ var {fnmatch, expandBraces} = require("../lib/fnmatch");
 
 var exec = function(pattern, input, expected, options) {
     var actual = input.filter(function(path) {
-        return fnmatch(path, pattern, options);
+        try {
+            return fnmatch(path, pattern, options);
+        } catch (e) {
+            assert.fail(pattern)
+        }
     });
     assert.deepEqual(actual.sort(), expected.sort(),
         strings.format("expected {} to match {}", pattern, expected));
