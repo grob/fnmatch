@@ -10,7 +10,7 @@ var exec = function(pattern, input, expected, options) {
         try {
             return fnmatch(path, pattern, options);
         } catch (e) {
-            assert.fail(pattern)
+            assert.fail(e);
         }
     });
     assert.deepEqual(actual.sort(), expected.sort(),
@@ -513,6 +513,12 @@ exports.testFnmatch = function() {
             "pattern": "**",
             "input": ["a", "a/", "a/b", "a/b/", "a/b/c", "a/b/c/"],
             "expected": ["a", "a/", "a/b", "a/b/", "a/b/c", "a/b/c/"]
+        },
+        {
+            // a trailing slash matches only directories
+            "pattern": "**/",
+            "input": ["a", "a/", "a/b", "a/b/", "a/b/c", "a/b/c/"],
+            "expected": ["a/", "a/b/", "a/b/c/"]
         },
         {
             "pattern": "a/**",
