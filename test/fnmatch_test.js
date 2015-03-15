@@ -14,7 +14,8 @@ var exec = function(pattern, input, expected, options) {
         }
     });
     assert.deepEqual(actual.sort(), expected.sort(),
-        strings.format("expected {} to match {}", pattern, expected));
+        strings.format("expected {} to match {} {}", pattern, expected,
+                (options || {}).toSource()));
 };
 
 exports.testExpandBraces = function() {
@@ -515,6 +516,12 @@ exports.testFnmatch = function() {
             "expected": ["a", "a/", "a/b", "a/b/", "a/b/c", "a/b/c/"]
         },
         {
+            "pattern": "**/*",
+            "input": ["a", "a/", "a/b", "a/b/", "a/b/c", "a/b/c/"],
+            "expected": ["a/b", "a/b/"],
+            "options": {"globstar": false}
+        },
+        {
             // a trailing slash matches only directories
             "pattern": "**/",
             "input": ["a", "a/", "a/b", "a/b/", "a/b/c", "a/b/c/"],
@@ -559,8 +566,26 @@ exports.testFnmatch = function() {
             "input": ["a/.x/b", "a/x/.b", "a/c/b"],
             "expected": ["a/.x/b", "a/c/b"],
             "options": {"dot": true}
+        },
+        // ignoreCase
+        {
+            "pattern": "a",
+            "input": ["A"],
+            "expected": ["A"],
+            "options": {"ignoreCase": true}
+        },
+        {
+            "pattern": "a*",
+            "input": ["a", "ab", "aB", "Ab", "AB"],
+            "expected": ["a", "ab", "aB", "Ab", "AB"],
+            "options": {"ignoreCase": true}
+        },
+        {
+            "pattern": "a/a?",
+            "input": ["a/aA", "A/Aa", "A/Ba"],
+            "expected": ["a/aA", "A/Aa"],
+            "options": {"ignoreCase": true}
         }
-
     ];
 
     for each (let {pattern, input, expected, options} in tests) {
