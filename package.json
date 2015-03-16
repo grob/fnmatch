@@ -1,8 +1,8 @@
 {
     "name": "fnmatch",
-    "version": "1.0.0",
-    "description": "Unix filename pattern matching",
-    "keywords": ["filename", "file", "pattern", "matching"],
+    "version": "0.9",
+    "description": "Glob pattern matching",
+    "keywords": ["glob", "file", "pattern", "matching"],
     "homepage": "https://github.com/grob/fnmatch/",
     "author": {
         "name": "Robert Gaggl",
