@@ -1,14 +1,13 @@
-// http://hg.python.org/cpython/file/20e65501cfa4/Lib/test/test_fnmatch.py
-
 var assert = require("assert");
+var system = require("system");
 var strings = require("ringo/utils/strings");
 
-var {fnmatch, expandBraces} = require("../lib/fnmatch");
+var {matches, expandBraces} = require("../lib/fnmatch");
 
 var exec = function(pattern, input, expected, options) {
     var actual = input.filter(function(path) {
         try {
-            return fnmatch(path, pattern, options);
+            return matches(path, pattern, options);
         } catch (e) {
             assert.fail(e);
         }
@@ -592,3 +591,7 @@ exports.testFnmatch = function() {
         exec(pattern, input, expected, options);
     }
 };
+
+if (require.main == module.id) {
+    system.exit(require('test').run(exports));
+}
