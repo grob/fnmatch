@@ -86,7 +86,7 @@ exports.testFnmatch = function() {
         {
             "pattern": "*",
             "input": ["a", "bc", "bdir/", "bdir/x"],
-            "expected": ["a", "bc", "bdir/"]
+            "expected": ["a", "bc", "bdir/", "bdir/x"]
         },
         {
             "pattern": "a*",
@@ -165,7 +165,7 @@ exports.testFnmatch = function() {
         {
             "pattern": "*",
             "input": [".", ".a", ".a/", ".a/b", "..", "..a", "../a", "a", "a.b"],
-            "expected": ["a", "a.b"]
+            "expected": ["../a", ".a/b", "a", "a.b"]
         },
         {
             "pattern": "a/*",
@@ -200,7 +200,7 @@ exports.testFnmatch = function() {
         {
             "pattern": "*",
             "input": [".", ".a", ".a/", ".a/b", "..", "..a", "../a", "a", "a.b"],
-            "expected": [".", ".a", ".a/", "..", "..a", "a", "a.b"],
+            "expected": [".", ".a", ".a/", ".a/b", "..", "..a", "../a", "a", "a.b"],
             "options": {"dot": true}
         },
         {
