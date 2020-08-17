@@ -1,11 +1,11 @@
-var assert = require("assert");
-var system = require("system");
-var strings = require("ringo/utils/strings");
+const assert = require("assert");
+const system = require("system");
+const strings = require("ringo/utils/strings");
 
-var {matches, expandBraces} = require("../lib/fnmatch");
+const {matches, expandBraces} = require("../lib/fnmatch");
 
-var exec = function(pattern, input, expected, options) {
-    var actual = input.filter(function(path) {
+const exec = (pattern, input, expected, options) => {
+    const actual = input.filter(function(path) {
         try {
             return matches(path, pattern, options);
         } catch (e) {
@@ -17,7 +17,7 @@ var exec = function(pattern, input, expected, options) {
                 (options || {}).toSource()));
 };
 
-exports.testExpandBraces = function() {
+exports.testExpandBraces = () => {
     assert.deepEqual(expandBraces('{'), ['\\{']);
     assert.deepEqual(expandBraces(',b'), [',b']);
     assert.deepEqual(expandBraces('a,b'), ['a,b']);
@@ -43,8 +43,8 @@ exports.testExpandBraces = function() {
     ]);
 };
 
-exports.testFnmatch = function() {
-    var tests = [
+exports.testFnmatch = () => {
+    const tests = [
         {
             "pattern": "abc",
             "input": ["a", "ab", "abc", "abcd"],
@@ -587,11 +587,12 @@ exports.testFnmatch = function() {
         }
     ];
 
-    for each (let {pattern, input, expected, options} in tests) {
-        exec(pattern, input, expected, options);
-    }
+    tests.forEach(test => {
+        exec(test.pattern, test.input, test.expected, test.options);
+    });
 };
 
 if (require.main == module.id) {
-    system.exit(require('test').run(exports));
+    system.exit(require("test").run.apply(null,
+            [exports].concat(system.args.slice(1))));
 }

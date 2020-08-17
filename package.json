@@ -1,6 +1,6 @@
 {
     "name": "fnmatch",
-    "version": "0.9",
+    "version": "1.0.0",
     "description": "Glob pattern matching",
     "keywords": ["glob", "file", "pattern", "matching"],
     "homepage": "https://github.com/grob/fnmatch/",
@@ -20,7 +20,7 @@
         "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }],
     "engines": {
-        "ringojs": ">= 0.10"
+        "ringojs": ">= 3.0"
     },
     "main": "./lib/fnmatch"
 }
